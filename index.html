@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Column Buckling Calculator | R.Ahsan Ahamed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Column Buckling Calculator</h1>
+    <p class="creator">Created by <strong>R.Ahsan Ahamed</strong></p>
+
+    <button id="darkModeToggle" class="dark-toggle">
+      <i class="fas fa-moon"></i> Toggle Dark Mode
+    </button>
+
+    <div class="tab-container">
+      <div class="tab active" data-tab="calculator">Calculator</div>
+      <div class="tab" data-tab="theory">Theory</div>
+      <div class="tab" data-tab="examples">Examples</div>
+    </div>
+
+    <div id="calculator" class="tab-content active">
+      <form id="bucklingForm">
+        <div class="input-group">
+          <label for="length">Length (L)
+            <span class="info-icon">
+              <i class="fas fa-info-circle"></i>
+              <span class="tooltip">Unsupported length of the column between end connections</span>
+            </span>
+          </label>
+          <div class="input-row">
+            <input type="number" id="length" placeholder="Enter value" required step="any" />
+            <select id="lengthUnit">
+              <option value="m">m</option>
+              <option value="cm">cm</option>
+              <option value="mm">mm</option>
+              <option value="in">in</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="modulus">Modulus of Elasticity (E)
+            <span class="info-icon">
+              <i class="fas fa-info-circle"></i>
+              <span class="tooltip">Material stiffness property (e.g., Steel ≈ 200 GPa)</span>
+            </span>
+          </label>
+          <div class="input-row">
+            <input type="number" id="modulus" placeholder="Enter value" required step="any" />
+            <select id="modulusUnit">
+              <option value="GPa">GPa</option>
+              <option value="MPa">MPa</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="inertia">Moment of Inertia (I)
+            <span class="info-icon">
+              <i class="fas fa-info-circle"></i>
+              <span class="tooltip">Resistance to bending based on cross-section shape</span>
+            </span>
+          </label>
+          <div class="input-row">
+            <input type="number" id="inertia" placeholder="Enter value" required step="any" />
+            <select id="inertiaUnit">
+              <option value="m4">m<span class="power">4</span></option>
+              <option value="cm4">cm<span class="power">4</span></option>
+              <option value="mm4">mm<span class="power">4</span></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="area">Cross-sectional Area (A)
+            <span class="info-icon">
+              <i class="fas fa-info-circle"></i>
+              <span class="tooltip">Total area of the column's cross-section</span>
+            </span>
+          </label>
+          <div class="input-row">
+            <input type="number" id="area" placeholder="Enter value" required step="any" />
+            <select id="areaUnit">
+              <option value="m2">m<span class="power">2</span></option>
+              <option value="cm2">cm<span class="power">2</span></option>
+              <option value="mm2">mm<span class="power">2</span></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="endCondition">End Condition
+            <span class="info-icon">
+              <i class="fas fa-info-circle"></i>
+              <span class="tooltip">How the column is supported at its ends</span>
+            </span>
+          </label>
+          <select id="endCondition" required>
+            <option value="1">Pinned-Pinned (K=1.0)</option>
+            <option value="0.7">Fixed-Fixed (K=0.7)</option>
+            <option value="2.0">Fixed-Free (K=2.0)</option>
+            <option value="0.5">Fixed-Pinned (K=0.5)</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="yieldStress">Yield Stress (σ<sub>Y</sub>)
+            <span class="info-icon">
+              <i class="fas fa-info-circle"></i>
+              <span class="tooltip">Stress at which material begins to deform plastically</span>
+            </span>
+          </label>
+          <div class="input-row">
+            <input type="number" id="yieldStress" placeholder="Enter value" required step="any" />
+            <select id="yieldStressUnit">
+              <option value="MPa">MPa</option>
+              <option value="Pa">Pa</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="primary-btn">
+          <i class="fas fa-calculator"></i> Calculate
+        </button>
+      </form>
+
+      <button id="exportPdf" class="export-btn">
+        <i class="fas fa-file-pdf"></i> Export PDF Report
+      </button>
+
+      <div id="result" class="result">
+        <p>Enter your values and click "Calculate" to see results.</p>
+      </div>
+    </div>
+
+    <div id="theory" class="tab-content">
+      <h2 class="section-title">Buckling Theory</h2>
+      <p>Column buckling (also called elastic instability) occurs when a slender column under axial compression fails due to lateral deflection rather than material failure.</p>
+      
+      <h3 class="section-title">Euler's Critical Load</h3>
+      <p>The critical buckling load is given by Euler's formula:</p>
+      <p class="formula">P<sub>cr</sub> = π²EI / (KL)²</p>
+      <p>Where:</p>
+      <ul>
+        <li>P<sub>cr</sub> = Critical buckling load</li>
+        <li>E = Modulus of elasticity</li>
+        <li>I = Moment of inertia</li>
+        <li>L = Column length</li>
+        <li>K = Effective length factor (depends on end conditions)</li>
+      </ul>
+
+      <h3 class="section-title">Slenderness Ratio</h3>
+      <p>The slenderness ratio (λ) determines whether buckling or yielding will occur first:</p>
+      <p class="formula">λ = KL / r</p>
+      <p>Where r = √(I/A) is the radius of gyration.</p>
+    </div>
+
+    <div id="examples" class="tab-content">
+      <h2 class="section-title">Example Calculations</h2>
+      
+      <h3 class="section-title">Steel Column Example</h3>
+      <p><strong>Given:</strong></p>
+      <ul>
+        <li>Material: Structural Steel (E = 200 GPa, σ<sub>Y</sub> = 250 MPa)</li>
+        <li>Length: 3 m</li>
+        <li>Cross-section: W150x22 (I = 9.6×10⁶ mm⁴, A = 2850 mm²)</li>
+        <li>End condition: Pinned-Pinned (K=1.0)</li>
+      </ul>
+      
+      <button id="loadSteelExample" class="primary-btn">
+        <i class="fas fa-arrow-down"></i> Load Steel Example
+      </button>
+
+      <h3 class="section-title">Aluminum Column Example</h3>
+      <p><strong>Given:</strong></p>
+      <ul>
+        <li>Material: Aluminum 6061 (E = 69 GPa, σ<sub>Y</sub> = 240 MPa)</li>
+        <li>Length: 2.5 m</li>
+        <li>Cross-section: 50×50×3mm square tube (I = 1.3×10⁵ mm⁴, A = 564 mm²)</li>
+        <li>End condition: Fixed-Fixed (K=0.7)</li>
+      </ul>
+      
+      <button id="loadAluminumExample" class="primary-btn">
+        <i class="fas fa-arrow-down"></i> Load Aluminum Example
+      </button>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
